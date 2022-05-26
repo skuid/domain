@@ -1,0 +1,15 @@
+.PHONY: protoc
+
+protoc: clean
+	@echo "Generating Go files"
+	mkdir -p pkg/pb
+	protoc \
+		--go_out=pkg/pb \
+		--go-grpc_out=pkg/pb \
+		--go-grpc_opt=paths=source_relative \
+		--go_opt=paths=source_relative \
+		--proto_path=proto \
+		proto/*.proto
+
+clean:
+	go clean github.com/skuid/pequod/...
