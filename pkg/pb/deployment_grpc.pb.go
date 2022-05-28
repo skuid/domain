@@ -8,7 +8,6 @@ package pb
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MarinaClient interface {
-	Deployment(ctx context.Context, opts ...grpc.CallOption) (Marina_DeploymentClient, error)
+	Deployment(ctx context.Context, in *DeploymentRequest, opts ...grpc.CallOption) (Marina_DeploymentClient, error)
 }
 
 type marinaClient struct {
@@ -34,27 +33,28 @@ func NewMarinaClient(cc grpc.ClientConnInterface) MarinaClient {
 	return &marinaClient{cc}
 }
 
-func (c *marinaClient) Deployment(ctx context.Context, opts ...grpc.CallOption) (Marina_DeploymentClient, error) {
+func (c *marinaClient) Deployment(ctx context.Context, in *DeploymentRequest, opts ...grpc.CallOption) (Marina_DeploymentClient, error) {
 	stream, err := c.cc.NewStream(ctx, &Marina_ServiceDesc.Streams[0], "/protobuf.Marina/Deployment", opts...)
 	if err != nil {
 		return nil, err
 	}
 	x := &marinaDeploymentClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
 	return x, nil
 }
 
 type Marina_DeploymentClient interface {
-	Send(*DeploymentRequest) error
 	Recv() (*DeploymentResponse, error)
 	grpc.ClientStream
 }
 
 type marinaDeploymentClient struct {
 	grpc.ClientStream
-}
-
-func (x *marinaDeploymentClient) Send(m *DeploymentRequest) error {
-	return x.ClientStream.SendMsg(m)
 }
 
 func (x *marinaDeploymentClient) Recv() (*DeploymentResponse, error) {
@@ -69,7 +69,7 @@ func (x *marinaDeploymentClient) Recv() (*DeploymentResponse, error) {
 // All implementations must embed UnimplementedMarinaServer
 // for forward compatibility
 type MarinaServer interface {
-	Deployment(Marina_DeploymentServer) error
+	Deployment(*DeploymentRequest, Marina_DeploymentServer) error
 	mustEmbedUnimplementedMarinaServer()
 }
 
@@ -77,7 +77,7 @@ type MarinaServer interface {
 type UnimplementedMarinaServer struct {
 }
 
-func (UnimplementedMarinaServer) Deployment(Marina_DeploymentServer) error {
+func (UnimplementedMarinaServer) Deployment(*DeploymentRequest, Marina_DeploymentServer) error {
 	return status.Errorf(codes.Unimplemented, "method Deployment not implemented")
 }
 func (UnimplementedMarinaServer) mustEmbedUnimplementedMarinaServer() {}
@@ -94,12 +94,15 @@ func RegisterMarinaServer(s grpc.ServiceRegistrar, srv MarinaServer) {
 }
 
 func _Marina_Deployment_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(MarinaServer).Deployment(&marinaDeploymentServer{stream})
+	m := new(DeploymentRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MarinaServer).Deployment(m, &marinaDeploymentServer{stream})
 }
 
 type Marina_DeploymentServer interface {
 	Send(*DeploymentResponse) error
-	Recv() (*DeploymentRequest, error)
 	grpc.ServerStream
 }
 
@@ -109,14 +112,6 @@ type marinaDeploymentServer struct {
 
 func (x *marinaDeploymentServer) Send(m *DeploymentResponse) error {
 	return x.ServerStream.SendMsg(m)
-}
-
-func (x *marinaDeploymentServer) Recv() (*DeploymentRequest, error) {
-	m := new(DeploymentRequest)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
 }
 
 // Marina_ServiceDesc is the grpc.ServiceDesc for Marina service.
@@ -131,7 +126,6 @@ var Marina_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "Deployment",
 			Handler:       _Marina_Deployment_Handler,
 			ServerStreams: true,
-			ClientStreams: true,
 		},
 	},
 	Metadata: "deployment.proto",
