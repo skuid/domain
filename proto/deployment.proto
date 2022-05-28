@@ -5,7 +5,7 @@ package protobuf;
 option go_package="github.com/skuid/pequod/pkg/pb";
 
 service Marina {
-  rpc Deployment(DeploymentRequest) returns (stream DeploymentResponse) {}
+  rpc Deployment(stream DeploymentRequest) returns (stream DeploymentResponse) {}
 }
 
 message DeploymentRequest {
