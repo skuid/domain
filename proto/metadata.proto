@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "github.com/skuid/pequod/pkg/pb";
+
+message Metadata {
+  repeated string Apps = 1;
+  repeated string AuthProviders = 2;
+  repeated string ComponentPacks = 3;
+  repeated string DataServices = 4;
+  repeated string DataSources = 5;
+  repeated string DesignSystems = 6;
+  repeated string Variables = 7;
+  repeated string Files = 8;
+  repeated string Pages = 9;
+  repeated string PermissionSets = 10;
+  repeated string SitePermissionSets = 11;
+  repeated string Site = 12;
+  repeated string Themes = 13;
+};
+
+// type NlxMetadata struct {
+// 	Apps               []string `json:"apps"`
+// 	AuthProviders      []string `json:"authproviders"`
+// 	ComponentPacks     []string `json:"componentpacks"`
+// 	DataServices       []string `json:"dataservices"`
+// 	DataSources        []string `json:"datasources"`
+// 	DesignSystems      []string `json:"designsystems"`
+// 	Variables          []string `json:"variables"`
+// 	Files              []string `json:"files"`
+// 	Pages              []string `json:"pages"`
+// 	PermissionSets     []string `json:"permissionsets"`
+// 	SitePermissionSets []string `json:"sitepermissionsets"`
+// 	Site               []string `json:"site"`
+// 	Themes             []string `json:"themes"`
+// }

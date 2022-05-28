@@ -10,28 +10,37 @@ Until then, makefiles.
 
 ---
 
-here's the buf stuff
+## proto deps
 
-## Update your crap (mac)
+```
+brew install protobuf
+go install github.com/favadi/protoc-go-inject-tag
+```
+
+---
+
+## here's the buf stuff
+
+### Update your crap (mac)
 
 ```
 softwareupdate --all --install --force
 ```
 
 
-## Install `buf`
+### Install `buf`
 
 ```
 brew install bufbuild/buf/buf
 ```
 
-## Install `jq`
+### Install `jq`
 
 ```
 brew install jq
 ```
 
-## Install `bloomrpc`
+### Install `bloomrpc`
 
 ```
 brew install bloomrpc
