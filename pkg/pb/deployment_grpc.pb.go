@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type MarinaClient interface {
 	RetrievePlan(ctx context.Context, in *RetrievePlanRequest, opts ...grpc.CallOption) (Marina_RetrievePlanClient, error)
 	Retrieve(ctx context.Context, in *RetrievalRequest, opts ...grpc.CallOption) (Marina_RetrieveClient, error)
+	ExampleStream(ctx context.Context, opts ...grpc.CallOption) (Marina_ExampleStreamClient, error)
+	Example(ctx context.Context, in *ExampleRequest, opts ...grpc.CallOption) (*ExampleResponse, error)
 }
 
 type marinaClient struct {
@@ -98,12 +100,54 @@ func (x *marinaRetrieveClient) Recv() (*RetrievalResponse, error) {
 	return m, nil
 }
 
+func (c *marinaClient) ExampleStream(ctx context.Context, opts ...grpc.CallOption) (Marina_ExampleStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Marina_ServiceDesc.Streams[2], "/protobuf.Marina/ExampleStream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &marinaExampleStreamClient{stream}
+	return x, nil
+}
+
+type Marina_ExampleStreamClient interface {
+	Send(*ExampleRequest) error
+	Recv() (*ExampleResponse, error)
+	grpc.ClientStream
+}
+
+type marinaExampleStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *marinaExampleStreamClient) Send(m *ExampleRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *marinaExampleStreamClient) Recv() (*ExampleResponse, error) {
+	m := new(ExampleResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *marinaClient) Example(ctx context.Context, in *ExampleRequest, opts ...grpc.CallOption) (*ExampleResponse, error) {
+	out := new(ExampleResponse)
+	err := c.cc.Invoke(ctx, "/protobuf.Marina/Example", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MarinaServer is the server API for Marina service.
 // All implementations must embed UnimplementedMarinaServer
 // for forward compatibility
 type MarinaServer interface {
 	RetrievePlan(*RetrievePlanRequest, Marina_RetrievePlanServer) error
 	Retrieve(*RetrievalRequest, Marina_RetrieveServer) error
+	ExampleStream(Marina_ExampleStreamServer) error
+	Example(context.Context, *ExampleRequest) (*ExampleResponse, error)
 	mustEmbedUnimplementedMarinaServer()
 }
 
@@ -116,6 +160,12 @@ func (UnimplementedMarinaServer) RetrievePlan(*RetrievePlanRequest, Marina_Retri
 }
 func (UnimplementedMarinaServer) Retrieve(*RetrievalRequest, Marina_RetrieveServer) error {
 	return status.Errorf(codes.Unimplemented, "method Retrieve not implemented")
+}
+func (UnimplementedMarinaServer) ExampleStream(Marina_ExampleStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method ExampleStream not implemented")
+}
+func (UnimplementedMarinaServer) Example(context.Context, *ExampleRequest) (*ExampleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Example not implemented")
 }
 func (UnimplementedMarinaServer) mustEmbedUnimplementedMarinaServer() {}
 
@@ -172,13 +222,62 @@ func (x *marinaRetrieveServer) Send(m *RetrievalResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Marina_ExampleStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(MarinaServer).ExampleStream(&marinaExampleStreamServer{stream})
+}
+
+type Marina_ExampleStreamServer interface {
+	Send(*ExampleResponse) error
+	Recv() (*ExampleRequest, error)
+	grpc.ServerStream
+}
+
+type marinaExampleStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *marinaExampleStreamServer) Send(m *ExampleResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *marinaExampleStreamServer) Recv() (*ExampleRequest, error) {
+	m := new(ExampleRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Marina_Example_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExampleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarinaServer).Example(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protobuf.Marina/Example",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarinaServer).Example(ctx, req.(*ExampleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Marina_ServiceDesc is the grpc.ServiceDesc for Marina service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Marina_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "protobuf.Marina",
 	HandlerType: (*MarinaServer)(nil),
-	Methods:     []grpc.MethodDesc{},
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Example",
+			Handler:    _Marina_Example_Handler,
+		},
+	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "RetrievePlan",
@@ -189,6 +288,12 @@ var Marina_ServiceDesc = grpc.ServiceDesc{
 			StreamName:    "Retrieve",
 			Handler:       _Marina_Retrieve_Handler,
 			ServerStreams: true,
+		},
+		{
+			StreamName:    "ExampleStream",
+			Handler:       _Marina_ExampleStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "deployment.proto",

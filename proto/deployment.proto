@@ -23,6 +23,9 @@ service Marina {
     // post : "/v1/retrieve"
     // };
   }
+	
+	rpc ExampleStream(stream ExampleRequest) returns (stream ExampleResponse) {}
+	rpc Example(ExampleRequest) returns (ExampleResponse) {}
 
   // rpc Deployment(stream DeploymentRequest) returns (stream
   // DeploymentResponse) {
@@ -54,6 +57,14 @@ message RetrievePlanFilter {
 
 message RetrievePlanResponse {
   RetrievalPlan RetrievalPlan = 1; //@gotags: json:"plan"
+}
+
+message ExampleRequest {
+  int32 num = 1;
+}
+
+message ExampleResponse {
+  int32 result = 1;
 }
 
 // message DeploymentRequest {}
