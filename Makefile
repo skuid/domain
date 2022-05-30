@@ -11,7 +11,7 @@ protoc: clean
 		--proto_path=proto \
 		proto/*.proto
 	protoc-go-inject-tag \
-		-input="./pkg/pb/**/*.pb.go"
+		-input="pkg/pb/*.pb.go"
 
 clean:
 	go clean github.com/skuid/pequod/...

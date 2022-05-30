@@ -20,16 +20,14 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type DeploymentRequest struct {
+type RetrievalRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Num int32 `protobuf:"varint,1,opt,name=num,proto3" json:"num,omitempty"`
 }
 
-func (x *DeploymentRequest) Reset() {
-	*x = DeploymentRequest{}
+func (x *RetrievalRequest) Reset() {
+	*x = RetrievalRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_deployment_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -37,13 +35,13 @@ func (x *DeploymentRequest) Reset() {
 	}
 }
 
-func (x *DeploymentRequest) String() string {
+func (x *RetrievalRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeploymentRequest) ProtoMessage() {}
+func (*RetrievalRequest) ProtoMessage() {}
 
-func (x *DeploymentRequest) ProtoReflect() protoreflect.Message {
+func (x *RetrievalRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_deployment_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -55,28 +53,19 @@ func (x *DeploymentRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeploymentRequest.ProtoReflect.Descriptor instead.
-func (*DeploymentRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use RetrievalRequest.ProtoReflect.Descriptor instead.
+func (*RetrievalRequest) Descriptor() ([]byte, []int) {
 	return file_deployment_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DeploymentRequest) GetNum() int32 {
-	if x != nil {
-		return x.Num
-	}
-	return 0
-}
-
-type DeploymentResponse struct {
+type RetrievalResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	Result int32 `protobuf:"varint,1,opt,name=result,proto3" json:"result,omitempty"`
 }
 
-func (x *DeploymentResponse) Reset() {
-	*x = DeploymentResponse{}
+func (x *RetrievalResponse) Reset() {
+	*x = RetrievalResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_deployment_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -84,13 +73,13 @@ func (x *DeploymentResponse) Reset() {
 	}
 }
 
-func (x *DeploymentResponse) String() string {
+func (x *RetrievalResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeploymentResponse) ProtoMessage() {}
+func (*RetrievalResponse) ProtoMessage() {}
 
-func (x *DeploymentResponse) ProtoReflect() protoreflect.Message {
+func (x *RetrievalResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_deployment_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,37 +91,224 @@ func (x *DeploymentResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeploymentResponse.ProtoReflect.Descriptor instead.
-func (*DeploymentResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use RetrievalResponse.ProtoReflect.Descriptor instead.
+func (*RetrievalResponse) Descriptor() ([]byte, []int) {
 	return file_deployment_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *DeploymentResponse) GetResult() int32 {
-	if x != nil {
-		return x.Result
+// we get a request from tides that's going to
+// fire off a series of requests to ${host}/v2/metadata/retrieve/plan
+// to get the plan for this work.
+// POST: ${host}/v2/metadata/retrieve/plan
+// headers: content-type: application/json
+//					authorization: bearer ${access-token}
+//					x-skuid-public-key-endpoint:
+//${host}/api/v1/site/verificationkey
+type RetrievePlanRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Host        string              `protobuf:"bytes,1,opt,name=Host,proto3" json:"Host,omitempty"`
+	AccessToken string              `protobuf:"bytes,2,opt,name=AccessToken,proto3" json:"AccessToken,omitempty"`
+	Filter      *RetrievePlanFilter `protobuf:"bytes,3,opt,name=Filter,proto3" json:"Filter,omitempty"`
+}
+
+func (x *RetrievePlanRequest) Reset() {
+	*x = RetrievePlanRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_deployment_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
 	}
-	return 0
+}
+
+func (x *RetrievePlanRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RetrievePlanRequest) ProtoMessage() {}
+
+func (x *RetrievePlanRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_deployment_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RetrievePlanRequest.ProtoReflect.Descriptor instead.
+func (*RetrievePlanRequest) Descriptor() ([]byte, []int) {
+	return file_deployment_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RetrievePlanRequest) GetHost() string {
+	if x != nil {
+		return x.Host
+	}
+	return ""
+}
+
+func (x *RetrievePlanRequest) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
+	}
+	return ""
+}
+
+func (x *RetrievePlanRequest) GetFilter() *RetrievePlanFilter {
+	if x != nil {
+		return x.Filter
+	}
+	return nil
+}
+
+type RetrievePlanFilter struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AppName   string   `protobuf:"bytes,1,opt,name=AppName,proto3" json:"appName"`     //@gotags: json:"appName"
+	PageNames []string `protobuf:"bytes,2,rep,name=PageNames,proto3" json:"pageNames"` //@gotags: json:"pageNames"
+}
+
+func (x *RetrievePlanFilter) Reset() {
+	*x = RetrievePlanFilter{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_deployment_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RetrievePlanFilter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RetrievePlanFilter) ProtoMessage() {}
+
+func (x *RetrievePlanFilter) ProtoReflect() protoreflect.Message {
+	mi := &file_deployment_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RetrievePlanFilter.ProtoReflect.Descriptor instead.
+func (*RetrievePlanFilter) Descriptor() ([]byte, []int) {
+	return file_deployment_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RetrievePlanFilter) GetAppName() string {
+	if x != nil {
+		return x.AppName
+	}
+	return ""
+}
+
+func (x *RetrievePlanFilter) GetPageNames() []string {
+	if x != nil {
+		return x.PageNames
+	}
+	return nil
+}
+
+type RetrievePlanResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RetrievalPlan *RetrievalPlan `protobuf:"bytes,1,opt,name=RetrievalPlan,proto3" json:"plan"` //@gotags: json:"plan"
+}
+
+func (x *RetrievePlanResponse) Reset() {
+	*x = RetrievePlanResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_deployment_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RetrievePlanResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RetrievePlanResponse) ProtoMessage() {}
+
+func (x *RetrievePlanResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_deployment_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RetrievePlanResponse.ProtoReflect.Descriptor instead.
+func (*RetrievePlanResponse) Descriptor() ([]byte, []int) {
+	return file_deployment_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *RetrievePlanResponse) GetRetrievalPlan() *RetrievalPlan {
+	if x != nil {
+		return x.RetrievalPlan
+	}
+	return nil
 }
 
 var File_deployment_proto protoreflect.FileDescriptor
 
 var file_deployment_proto_rawDesc = []byte{
 	0x0a, 0x10, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x22, 0x25, 0x0a, 0x11,
-	0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x10, 0x0a, 0x03, 0x6e, 0x75, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x03,
-	0x6e, 0x75, 0x6d, 0x22, 0x2c, 0x0a, 0x12, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e,
-	0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x72, 0x65, 0x73,
-	0x75, 0x6c, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x72, 0x65, 0x73, 0x75, 0x6c,
-	0x74, 0x32, 0x57, 0x0a, 0x06, 0x4d, 0x61, 0x72, 0x69, 0x6e, 0x61, 0x12, 0x4d, 0x0a, 0x0a, 0x44,
-	0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
-	0x66, 0x2e, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x6d, 0x65, 0x6e, 0x74, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x28, 0x01, 0x30, 0x01, 0x42, 0x20, 0x5a, 0x1e, 0x67, 0x69,
-	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6b, 0x75, 0x69, 0x64, 0x2f, 0x70,
-	0x65, 0x71, 0x75, 0x6f, 0x64, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x6f, 0x12, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x1a, 0x0e, 0x6d, 0x65,
+	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x12, 0x0a, 0x10,
+	0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x22, 0x13, 0x0a, 0x11, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x61, 0x6c, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x81, 0x01, 0x0a, 0x13, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65,
+	0x76, 0x65, 0x50, 0x6c, 0x61, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a,
+	0x04, 0x48, 0x6f, 0x73, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x48, 0x6f, 0x73,
+	0x74, 0x12, 0x20, 0x0a, 0x0b, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x54, 0x6f, 0x6b, 0x65, 0x6e,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x41, 0x63, 0x63, 0x65, 0x73, 0x73, 0x54, 0x6f,
+	0x6b, 0x65, 0x6e, 0x12, 0x34, 0x0a, 0x06, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x52,
+	0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x65, 0x50, 0x6c, 0x61, 0x6e, 0x46, 0x69, 0x6c, 0x74, 0x65,
+	0x72, 0x52, 0x06, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x22, 0x4c, 0x0a, 0x12, 0x52, 0x65, 0x74,
+	0x72, 0x69, 0x65, 0x76, 0x65, 0x50, 0x6c, 0x61, 0x6e, 0x46, 0x69, 0x6c, 0x74, 0x65, 0x72, 0x12,
+	0x18, 0x0a, 0x07, 0x41, 0x70, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x41, 0x70, 0x70, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x50, 0x61, 0x67,
+	0x65, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x50, 0x61,
+	0x67, 0x65, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x22, 0x55, 0x0a, 0x14, 0x52, 0x65, 0x74, 0x72, 0x69,
+	0x65, 0x76, 0x65, 0x50, 0x6c, 0x61, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x3d, 0x0a, 0x0d, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x61, 0x6c, 0x50, 0x6c, 0x61, 0x6e,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75,
+	0x66, 0x2e, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x61, 0x6c, 0x50, 0x6c, 0x61, 0x6e, 0x52,
+	0x0d, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x61, 0x6c, 0x50, 0x6c, 0x61, 0x6e, 0x32, 0xa4,
+	0x01, 0x0a, 0x06, 0x4d, 0x61, 0x72, 0x69, 0x6e, 0x61, 0x12, 0x51, 0x0a, 0x0c, 0x52, 0x65, 0x74,
+	0x72, 0x69, 0x65, 0x76, 0x65, 0x50, 0x6c, 0x61, 0x6e, 0x12, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x65, 0x50, 0x6c, 0x61,
+	0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1e, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x65, 0x50, 0x6c, 0x61, 0x6e,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x12, 0x47, 0x0a, 0x08,
+	0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x65, 0x12, 0x1a, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2e, 0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x61, 0x6c, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e,
+	0x52, 0x65, 0x74, 0x72, 0x69, 0x65, 0x76, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x30, 0x01, 0x42, 0x20, 0x5a, 0x1e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x73, 0x6b, 0x75, 0x69, 0x64, 0x2f, 0x70, 0x65, 0x71, 0x75, 0x6f, 0x64,
+	0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -147,19 +323,27 @@ func file_deployment_proto_rawDescGZIP() []byte {
 	return file_deployment_proto_rawDescData
 }
 
-var file_deployment_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_deployment_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_deployment_proto_goTypes = []interface{}{
-	(*DeploymentRequest)(nil),  // 0: protobuf.DeploymentRequest
-	(*DeploymentResponse)(nil), // 1: protobuf.DeploymentResponse
+	(*RetrievalRequest)(nil),     // 0: protobuf.RetrievalRequest
+	(*RetrievalResponse)(nil),    // 1: protobuf.RetrievalResponse
+	(*RetrievePlanRequest)(nil),  // 2: protobuf.RetrievePlanRequest
+	(*RetrievePlanFilter)(nil),   // 3: protobuf.RetrievePlanFilter
+	(*RetrievePlanResponse)(nil), // 4: protobuf.RetrievePlanResponse
+	(*RetrievalPlan)(nil),        // 5: protobuf.RetrievalPlan
 }
 var file_deployment_proto_depIdxs = []int32{
-	0, // 0: protobuf.Marina.Deployment:input_type -> protobuf.DeploymentRequest
-	1, // 1: protobuf.Marina.Deployment:output_type -> protobuf.DeploymentResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	3, // 0: protobuf.RetrievePlanRequest.Filter:type_name -> protobuf.RetrievePlanFilter
+	5, // 1: protobuf.RetrievePlanResponse.RetrievalPlan:type_name -> protobuf.RetrievalPlan
+	2, // 2: protobuf.Marina.RetrievePlan:input_type -> protobuf.RetrievePlanRequest
+	0, // 3: protobuf.Marina.Retrieve:input_type -> protobuf.RetrievalRequest
+	4, // 4: protobuf.Marina.RetrievePlan:output_type -> protobuf.RetrievePlanResponse
+	1, // 5: protobuf.Marina.Retrieve:output_type -> protobuf.RetrievalResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_deployment_proto_init() }
@@ -167,9 +351,10 @@ func file_deployment_proto_init() {
 	if File_deployment_proto != nil {
 		return
 	}
+	file_metadata_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_deployment_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeploymentRequest); i {
+			switch v := v.(*RetrievalRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -181,7 +366,43 @@ func file_deployment_proto_init() {
 			}
 		}
 		file_deployment_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeploymentResponse); i {
+			switch v := v.(*RetrievalResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_deployment_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RetrievePlanRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_deployment_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RetrievePlanFilter); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_deployment_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RetrievePlanResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -199,7 +420,7 @@ func file_deployment_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_deployment_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

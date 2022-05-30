@@ -4,21 +4,35 @@ package protobuf;
 
 option go_package = "github.com/skuid/pequod/pkg/pb";
 
-message Metadata {
-  repeated string Apps = 1;
-  repeated string AuthProviders = 2;
-  repeated string ComponentPacks = 3;
-  repeated string DataServices = 4;
-  repeated string DataSources = 5;
-  repeated string DesignSystems = 6;
-  repeated string Variables = 7;
-  repeated string Files = 8;
-  repeated string Pages = 9;
-  repeated string PermissionSets = 10;
-  repeated string SitePermissionSets = 11;
-  repeated string Site = 12;
-  repeated string Themes = 13;
-};
+// This is the result of getting the plan from the pliny
+// deployment retrieval plan endpoint
+// type NlxPlanPayload struct {
+// 	// Cloud Data Service is WARDEN
+// 	CloudDataService NlxPlan `json:"skuidCloudDataService"`
+// 	// Metadata Service is PLINY
+// 	MetadataService NlxPlan `json:"skuidMetadataService"`
+// }
+message RetrievalPlan {
+  Plan CloudDataService = 1; // @gotags: json:"skuidCloudDataService"
+  Plan MetadataService = 2;  // @gotags: json:"skuidMetadataService"
+}
+
+// type NlxPlan struct {
+// 	Host     string      `json:"host"`
+// 	Port     string      `json:"port"`
+// 	Endpoint string      `json:"url"`
+// 	Type     string      `json:"type"`
+// 	Metadata NlxMetadata `json:"metadata"`
+// 	Warnings []string    `json:"warnings"`
+// }
+message Plan {
+  string Host = 1;              // @gotags: json:"host"
+  string Port = 2;              // @gotags: json:"port"
+  string Endpoint = 3;          // @gotags: json:"url"
+  string Type = 4;              // @gotags: json:"type"
+  Metadata NlxMetadata = 5;     // @gotags: json:"metadata"
+  repeated string Warnings = 6; // @gotags: json:"warnings"
+}
 
 // type NlxMetadata struct {
 // 	Apps               []string `json:"apps"`
@@ -35,3 +49,18 @@ message Metadata {
 // 	Site               []string `json:"site"`
 // 	Themes             []string `json:"themes"`
 // }
+message Metadata {
+  repeated string Apps = 1;                // @gotags: json:"apps"
+  repeated string AuthProviders = 2;       // @gotags: json:"authproviders"
+  repeated string ComponentPacks = 3;      // @gotags: json:"componentpacks"
+  repeated string DataServices = 4;        // @gotags: json:"dataservices"
+  repeated string DataSources = 5;         // @gotags: json:"datasources"
+  repeated string DesignSystems = 6;       // @gotags: json:"designsystems"
+  repeated string Variables = 7;           // @gotags: json:"variables"
+  repeated string Files = 8;               // @gotags: json:"files"
+  repeated string Pages = 9;               // @gotags: json:"pages"
+  repeated string PermissionSets = 10;     // @gotags: json:"permissionsets"
+  repeated string SitePermissionSets = 11; // @gotags: json:"sitepermissionsets"
+  repeated string Site = 12;               // @gotags: json:"site"
+  repeated string Themes = 13;             // @gotags: json:"themes"
+};
