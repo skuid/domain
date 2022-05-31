@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package protobuf;
 
-option go_package = "github.com/skuid/pequod/pkg/pb";
+option go_package = "github.com/skuid/domain/pkg/pb";
 
 import "metadata.proto";
 // import "google.api.http";
