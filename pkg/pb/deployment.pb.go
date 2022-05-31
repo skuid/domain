@@ -110,7 +110,7 @@ type RetrievePlanRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Host        string              `protobuf:"bytes,1,opt,name=Host,proto3" json:"Host,omitempty"`
-	AccessToken string              `protobuf:"bytes,2,opt,name=AccessToken,proto3" json:"AccessToken,omitempty"`
+	AccessToken string              `protobuf:"bytes,2,opt,name=AccessToken,proto3" json:"AccessToken,omitempty"` //@gotags json:"-"
 	Filter      *RetrievePlanFilter `protobuf:"bytes,3,opt,name=Filter,proto3" json:"Filter,omitempty"`
 }
 
