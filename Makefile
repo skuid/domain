@@ -12,6 +12,11 @@ protoc: clean
 		proto/*.proto
 	protoc-go-inject-tag \
 		-input="pkg/pb/*.pb.go"
+		
+commit:
+	git add proto/*
+	git add pkg/pb/*
+	git commit -m"Makefile Auto-Commit"
 
 clean:
 	go clean github.com/skuid/domain/...

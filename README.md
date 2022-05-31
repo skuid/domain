@@ -1,4 +1,4 @@
-# domain
+# Shared Domain
 
 ## Named for the boat that chased Moby-Dick
 
