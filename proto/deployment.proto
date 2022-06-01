@@ -8,14 +8,6 @@ import "metadata.proto";
 // import "google.api.http";
 
 service Marina {
-  rpc RetrievePlan(RetrievePlanRequest) returns (stream RetrievePlanResponse) {
-    // TODO: adding this allows for restful endpoints so we can use this to
-    // replace existing json stuff
-    // option (google.api.http) = {
-    // post : "/v1/retrieve/plan"
-    // };
-  }
-
   rpc Retrieve(RetrievalRequest) returns (stream RetrievalResponse) {
     // TODO: adding this allows for restful endpoints so we can use this to
     // replace existing json stuff
@@ -24,12 +16,15 @@ service Marina {
     // };
   }
 
+  rpc Deploy(DeploymentRequest) returns (stream DeploymentResponse) {
+		// TODO: adding this allows for restful endpoints so we can use this to
+    // replace existing json stuff
+    // option (google.api.http) = {
+    // post : "/v1/deploy"
+    // };
+	}
   rpc ExampleStream(stream ExampleRequest) returns (stream ExampleResponse) {}
   rpc Example(ExampleRequest) returns (ExampleResponse) {}
-
-  // rpc Deployment(stream DeploymentRequest) returns (stream
-  // DeploymentResponse) {
-  // }
 }
 
 message RetrievalRequest {}

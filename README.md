@@ -2,7 +2,7 @@
 
 ## Named for the boat that chased Moby-Dick
 
-This repository is used to store protobuf definitions and common business logic between [marina](https://github.com/skuid/marina) and [tides](https://github.com/skuid/tides)
+This repository is used to store protobuf definitions and common business logic between [marina](https://github.com/skuid/marina) and [tides](https://github.com/skuid/domain)
 
 We're going to use [buf](https://buf.build)([pricing](https://buf.build/pricing/)) for the protocol buffer builds if we want to later.
 

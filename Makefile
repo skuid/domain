@@ -20,3 +20,29 @@ commit:
 
 clean:
 	go clean github.com/skuid/domain/...
+	
+ci:
+	go test -v -cover ./... -args 
+
+test:
+	go test -v -short ./...
+	
+it:
+	go test -v ./...
+	
+bench:
+	go test -benchmem -v -bench=. ./...
+
+# this command creates a directory .coverage 
+# then outputs coverage data into .coverage/cover.out, 
+# then generates a readable html file in .coverage/coverage.html
+cover:
+	@mkdir .coverage || echo "hidden coverage folder exists"
+	@go test -v -cover ./... -coverprofile .coverage/coverage.out
+	@go tool cover -html=.coverage/coverage.out -o .coverage/coverage.html
+
+# this opens the file .coverage/coverage.html after
+# generating the consumable html coverage report
+covero:
+	@make cover
+	@open .coverage/coverage.html
