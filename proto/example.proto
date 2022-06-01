@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "github.com/skuid/domain/pkg/pb";
+
+message ExampleRequest { int32 num = 1; }
+
+message ExampleResponse { int32 result = 1; }
