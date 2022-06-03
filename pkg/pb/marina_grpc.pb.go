@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.19.4
-// source: deployment.proto
+// source: marina.proto
 
 package pb
 
@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MarinaClient interface {
-	RetrievePlan(ctx context.Context, in *RetrievePlanRequest, opts ...grpc.CallOption) (Marina_RetrievePlanClient, error)
 	Retrieve(ctx context.Context, in *RetrievalRequest, opts ...grpc.CallOption) (Marina_RetrieveClient, error)
+	Deploy(ctx context.Context, in *DeploymentRequest, opts ...grpc.CallOption) (Marina_DeployClient, error)
 	ExampleStream(ctx context.Context, opts ...grpc.CallOption) (Marina_ExampleStreamClient, error)
 	Example(ctx context.Context, in *ExampleRequest, opts ...grpc.CallOption) (*ExampleResponse, error)
 }
@@ -36,40 +36,8 @@ func NewMarinaClient(cc grpc.ClientConnInterface) MarinaClient {
 	return &marinaClient{cc}
 }
 
-func (c *marinaClient) RetrievePlan(ctx context.Context, in *RetrievePlanRequest, opts ...grpc.CallOption) (Marina_RetrievePlanClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Marina_ServiceDesc.Streams[0], "/protobuf.Marina/RetrievePlan", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &marinaRetrievePlanClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type Marina_RetrievePlanClient interface {
-	Recv() (*RetrievePlanResponse, error)
-	grpc.ClientStream
-}
-
-type marinaRetrievePlanClient struct {
-	grpc.ClientStream
-}
-
-func (x *marinaRetrievePlanClient) Recv() (*RetrievePlanResponse, error) {
-	m := new(RetrievePlanResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
 func (c *marinaClient) Retrieve(ctx context.Context, in *RetrievalRequest, opts ...grpc.CallOption) (Marina_RetrieveClient, error) {
-	stream, err := c.cc.NewStream(ctx, &Marina_ServiceDesc.Streams[1], "/protobuf.Marina/Retrieve", opts...)
+	stream, err := c.cc.NewStream(ctx, &Marina_ServiceDesc.Streams[0], "/protobuf.Marina/Retrieve", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,6 +62,38 @@ type marinaRetrieveClient struct {
 
 func (x *marinaRetrieveClient) Recv() (*RetrievalResponse, error) {
 	m := new(RetrievalResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *marinaClient) Deploy(ctx context.Context, in *DeploymentRequest, opts ...grpc.CallOption) (Marina_DeployClient, error) {
+	stream, err := c.cc.NewStream(ctx, &Marina_ServiceDesc.Streams[1], "/protobuf.Marina/Deploy", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &marinaDeployClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Marina_DeployClient interface {
+	Recv() (*DeploymentResponse, error)
+	grpc.ClientStream
+}
+
+type marinaDeployClient struct {
+	grpc.ClientStream
+}
+
+func (x *marinaDeployClient) Recv() (*DeploymentResponse, error) {
+	m := new(DeploymentResponse)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -144,8 +144,8 @@ func (c *marinaClient) Example(ctx context.Context, in *ExampleRequest, opts ...
 // All implementations must embed UnimplementedMarinaServer
 // for forward compatibility
 type MarinaServer interface {
-	RetrievePlan(*RetrievePlanRequest, Marina_RetrievePlanServer) error
 	Retrieve(*RetrievalRequest, Marina_RetrieveServer) error
+	Deploy(*DeploymentRequest, Marina_DeployServer) error
 	ExampleStream(Marina_ExampleStreamServer) error
 	Example(context.Context, *ExampleRequest) (*ExampleResponse, error)
 	mustEmbedUnimplementedMarinaServer()
@@ -155,11 +155,11 @@ type MarinaServer interface {
 type UnimplementedMarinaServer struct {
 }
 
-func (UnimplementedMarinaServer) RetrievePlan(*RetrievePlanRequest, Marina_RetrievePlanServer) error {
-	return status.Errorf(codes.Unimplemented, "method RetrievePlan not implemented")
-}
 func (UnimplementedMarinaServer) Retrieve(*RetrievalRequest, Marina_RetrieveServer) error {
 	return status.Errorf(codes.Unimplemented, "method Retrieve not implemented")
+}
+func (UnimplementedMarinaServer) Deploy(*DeploymentRequest, Marina_DeployServer) error {
+	return status.Errorf(codes.Unimplemented, "method Deploy not implemented")
 }
 func (UnimplementedMarinaServer) ExampleStream(Marina_ExampleStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method ExampleStream not implemented")
@@ -180,27 +180,6 @@ func RegisterMarinaServer(s grpc.ServiceRegistrar, srv MarinaServer) {
 	s.RegisterService(&Marina_ServiceDesc, srv)
 }
 
-func _Marina_RetrievePlan_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(RetrievePlanRequest)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(MarinaServer).RetrievePlan(m, &marinaRetrievePlanServer{stream})
-}
-
-type Marina_RetrievePlanServer interface {
-	Send(*RetrievePlanResponse) error
-	grpc.ServerStream
-}
-
-type marinaRetrievePlanServer struct {
-	grpc.ServerStream
-}
-
-func (x *marinaRetrievePlanServer) Send(m *RetrievePlanResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
 func _Marina_Retrieve_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(RetrievalRequest)
 	if err := stream.RecvMsg(m); err != nil {
@@ -219,6 +198,27 @@ type marinaRetrieveServer struct {
 }
 
 func (x *marinaRetrieveServer) Send(m *RetrievalResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _Marina_Deploy_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(DeploymentRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MarinaServer).Deploy(m, &marinaDeployServer{stream})
+}
+
+type Marina_DeployServer interface {
+	Send(*DeploymentResponse) error
+	grpc.ServerStream
+}
+
+type marinaDeployServer struct {
+	grpc.ServerStream
+}
+
+func (x *marinaDeployServer) Send(m *DeploymentResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -280,13 +280,13 @@ var Marina_ServiceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "RetrievePlan",
-			Handler:       _Marina_RetrievePlan_Handler,
+			StreamName:    "Retrieve",
+			Handler:       _Marina_Retrieve_Handler,
 			ServerStreams: true,
 		},
 		{
-			StreamName:    "Retrieve",
-			Handler:       _Marina_Retrieve_Handler,
+			StreamName:    "Deploy",
+			Handler:       _Marina_Deploy_Handler,
 			ServerStreams: true,
 		},
 		{
@@ -296,5 +296,5 @@ var Marina_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 	},
-	Metadata: "deployment.proto",
+	Metadata: "marina.proto",
 }

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "github.com/skuid/domain/pkg/pb";
+
+// we get a request from tides that's going to
+// fire off a series of requests to ${host}/v2/metadata/retrieve/plan
+// to get the plan for this work.
+// POST: ${host}/v2/metadata/retrieve/plan
+// headers: content-type: application/json
+//					authorization: bearer ${access-token}
+//					x-skuid-public-key-endpoint:
+//${host}/api/v1/site/verificationkey
+message RetrievalRequest {
+  string Host = 1;
+  string Username = 2; //@gotags json:"username"
+  string Password = 3;
+  RetrieveFilter Filter = 4;
+}
+
+message RetrieveFilter {
+  string AppName = 1;            //@gotags: json:"appName"
+  repeated string PageNames = 2; //@gotags: json:"pageNames"
+}
+
+message RetrievalResponse {}

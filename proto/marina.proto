@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package protobuf;
+
+option go_package = "github.com/skuid/domain/pkg/pb";
+
+import "metadata.proto";
+import "retrieval.proto";
+import "example.proto";
+// import "google.api.http";
+
+service Marina {
+  rpc Retrieve(RetrievalRequest) returns (stream RetrievalResponse) {
+    // TODO: adding this allows for restful endpoints so we can use this to
+    // replace existing json stuff
+    // option (google.api.http) = {
+    // post : "/v1/retrieve"
+    // };
+  }
+
+  rpc Deploy(DeploymentRequest) returns (stream DeploymentResponse) {
+    // TODO: adding this allows for restful endpoints so we can use this to
+    // replace existing json stuff
+    // option (google.api.http) = {
+    // post : "/v1/deploy"
+    // };
+  }
+  rpc ExampleStream(stream ExampleRequest) returns (stream ExampleResponse) {}
+  rpc Example(ExampleRequest) returns (ExampleResponse) {}
+}
+
+
+message DeploymentRequest {}
+
+message DeploymentResponse {}
