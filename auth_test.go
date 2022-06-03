@@ -1,4 +1,4 @@
-package pkg_test
+package domain_test
 
 import (
 	"os"
@@ -7,9 +7,9 @@ import (
 	"github.com/gookit/color"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/skuid/domain/pkg"
-	"github.com/skuid/domain/pkg/constants"
-	"github.com/skuid/domain/pkg/util"
+	"github.com/skuid/domain"
+	"github.com/skuid/domain/constants"
+	"github.com/skuid/domain/util"
 )
 
 var (
@@ -26,20 +26,20 @@ func TestAuthorizationMethods(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if accessToken, err := pkg.GetAccessToken(
+	if accessToken, err := domain.GetAccessToken(
 		authHost, authUser, authPass,
 	); err != nil {
 		color.Red.Println(err)
 		t.FailNow()
-	} else if authorizationToken, err := pkg.GetAuthorizationToken(
+	} else if authorizationToken, err := domain.GetAuthorizationToken(
 		authHost, accessToken,
 	); err != nil {
 		color.Red.Println(err)
 		t.FailNow()
 	} else {
 
-		var auth pkg.Authorization
-		if auth, err := pkg.Authorize(authHost, authUser, authPass); err != nil {
+		var auth domain.Authorization
+		if auth, err := domain.Authorize(authHost, authUser, authPass); err != nil {
 			t.FailNow()
 		} else if err := auth.Refresh(); err != nil {
 			t.FailNow()

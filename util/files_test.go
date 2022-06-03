@@ -13,7 +13,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/skuid/domain/pkg/util"
+	"github.com/skuid/domain/util"
 )
 
 func TestGetAbs(t *testing.T) {

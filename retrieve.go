@@ -1,4 +1,4 @@
-package pkg
+package domain
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/skuid/domain/pkg/logging"
+	"github.com/skuid/domain/logging"
 )
 
 var (

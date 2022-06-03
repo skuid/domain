@@ -1,4 +1,4 @@
-package pkg
+package domain
 
 import (
 	"encoding/json"
@@ -8,10 +8,10 @@ import (
 	"github.com/gookit/color"
 	"github.com/valyala/fasthttp"
 
-	"github.com/skuid/domain/pkg/constants"
-	"github.com/skuid/domain/pkg/errors"
-	"github.com/skuid/domain/pkg/logging"
-	"github.com/skuid/domain/pkg/util"
+	"github.com/skuid/domain/constants"
+	"github.com/skuid/domain/errors"
+	"github.com/skuid/domain/logging"
+	"github.com/skuid/domain/util"
 )
 
 var (

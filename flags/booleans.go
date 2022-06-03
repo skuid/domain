@@ -1,6 +1,6 @@
 package flags
 
-import "github.com/skuid/domain/pkg/constants"
+import "github.com/skuid/domain/constants"
 
 var (
 	Verbose = &Flag[bool]{

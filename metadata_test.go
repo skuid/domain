@@ -1,10 +1,11 @@
-package pkg_test
+package domain_test
 
 import (
 	"testing"
 
-	"github.com/skuid/domain/pkg"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/skuid/domain"
 )
 
 // TODO: uncomment
@@ -70,7 +71,7 @@ import (
 // 		},
 // 	} {
 // 		t.Run(tc.description, func(t *testing.T) {
-// 			plan := pkg.NlxPlan{}
+// 			plan := domain.NlxPlan{}
 // 			err := json.Unmarshal([]byte(tc.given), &plan)
 // 			if err != nil {
 // 				t.Log(err)
@@ -83,9 +84,9 @@ import (
 
 func TestGetMetadataByString(t *testing.T) {
 
-	badErr := pkg.GetFieldValueByNameError("bad")
+	badErr := domain.GetFieldValueByNameError("bad")
 
-	metadata := pkg.NlxMetadata{
+	metadata := domain.NlxMetadata{
 		Apps:               []string{"apps"},
 		AuthProviders:      []string{"authproviders"},
 		ComponentPacks:     []string{"componentpacks"},

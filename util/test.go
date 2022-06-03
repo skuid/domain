@@ -5,7 +5,7 @@ import (
 
 	"github.com/joho/godotenv"
 
-	"github.com/skuid/domain/pkg/constants"
+	"github.com/skuid/domain/constants"
 )
 
 func SkipIntegrationTest(t *testing.T) {

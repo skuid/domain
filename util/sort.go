@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/skuid/domain/pkg/logging"
+	"github.com/skuid/domain/logging"
 )
 
 // hopefully this doesn't mess with anything lol

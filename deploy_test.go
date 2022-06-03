@@ -1,18 +1,18 @@
-package pkg_test
+package domain_test
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/skuid/domain/pkg"
-	"github.com/skuid/domain/pkg/util"
+	"github.com/skuid/domain"
+	"github.com/skuid/domain/util"
 )
 
 func TestGetDeployPlan(t *testing.T) {
 	util.SkipIntegrationTest(t)
 
-	auth, err := pkg.Authorize(authHost, authUser, authPass)
+	auth, err := domain.Authorize(authHost, authUser, authPass)
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
@@ -21,20 +21,20 @@ func TestGetDeployPlan(t *testing.T) {
 	wd, _ := os.Getwd()
 	fp := filepath.Join(wd, "..", "..", "_deploy")
 
-	deploymentPlan, err := pkg.Archive(fp, nil)
+	deploymentPlan, err := domain.Archive(fp, nil)
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
 
-	duration, plans, err := pkg.PrepareDeployment(auth, deploymentPlan, nil)
+	duration, plans, err := domain.PrepareDeployment(auth, deploymentPlan, nil)
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
 	t.Log(duration)
 
-	duration, _, err = pkg.ExecuteDeployPlan(auth, plans, fp)
+	duration, _, err = domain.ExecuteDeployPlan(auth, plans, fp)
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
@@ -45,14 +45,14 @@ func TestGetDeployPlan(t *testing.T) {
 
 func BenchmarkDeploymentPlan(b *testing.B) {
 	util.SkipBenchmark(b)
-	auth, _ := pkg.Authorize(authHost, authUser, authPass)
+	auth, _ := domain.Authorize(authHost, authUser, authPass)
 	wd, _ := os.Getwd()
 	fp := filepath.Join(wd, "..", "..", "_deploy")
-	deploymentPlan, _ := pkg.Archive(fp, nil)
-	_, plans, _ := pkg.PrepareDeployment(auth, deploymentPlan, nil)
+	deploymentPlan, _ := domain.Archive(fp, nil)
+	_, plans, _ := domain.PrepareDeployment(auth, deploymentPlan, nil)
 	b.ResetTimer()
 	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
-		_, _, _ = pkg.ExecuteDeployPlan(auth, plans, fp)
+		_, _, _ = domain.ExecuteDeployPlan(auth, plans, fp)
 	}
 }

@@ -3,8 +3,8 @@ package util
 import (
 	"strings"
 
-	"github.com/skuid/domain/pkg/constants"
-	"github.com/skuid/domain/pkg/flags"
+	"github.com/skuid/domain/constants"
+	"github.com/skuid/domain/flags"
 )
 
 // RemovePasswordBytes is a pass-through to RemovePassword.

@@ -1,1 +1,1 @@
-package pkg_test
+package domain_test

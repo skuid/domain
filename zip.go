@@ -1,4 +1,4 @@
-package pkg
+package domain
 
 import (
 	"archive/zip"
@@ -12,7 +12,7 @@ import (
 	"github.com/gookit/color"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/skuid/domain/pkg/logging"
+	"github.com/skuid/domain/logging"
 )
 
 // Archive compresses a file/directory to a writer

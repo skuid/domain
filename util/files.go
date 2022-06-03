@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 	jsonpatch "github.com/skuid/json-patch"
 
-	"github.com/skuid/domain/pkg/logging"
+	"github.com/skuid/domain/logging"
 )
 
 // FromWindowsPath takes a `path` string and replaces double back-ticks

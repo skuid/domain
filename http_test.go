@@ -1,4 +1,4 @@
-package pkg_test
+package domain_test
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/valyala/fasthttp"
 
-	"github.com/skuid/domain/pkg"
-	"github.com/skuid/domain/pkg/util"
+	"github.com/skuid/domain"
+	"github.com/skuid/domain/util"
 )
 
 func TestFasthttpMethods(t *testing.T) {
@@ -56,7 +56,7 @@ func TestFasthttpMethods(t *testing.T) {
 		},
 	} {
 		t.Run(tc.description, func(subtest *testing.T) {
-			actual, actualError := pkg.FastJsonBodyRequest[YesNoResponse](
+			actual, actualError := domain.FastJsonBodyRequest[YesNoResponse](
 				tc.givenHost,
 				fasthttp.MethodGet,
 				[]byte{},

@@ -1,7 +1,7 @@
 package flags
 
 import (
-	"github.com/skuid/domain/pkg/constants"
+	"github.com/skuid/domain/constants"
 )
 
 var (

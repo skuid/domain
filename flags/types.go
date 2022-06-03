@@ -9,9 +9,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/skuid/domain/pkg/constants"
-	"github.com/skuid/domain/pkg/errors"
-	"github.com/skuid/domain/pkg/logging"
+	"github.com/skuid/domain/constants"
+	"github.com/skuid/domain/errors"
+	"github.com/skuid/domain/logging"
 )
 
 // Generic flag type that can take a type variable and use a pointer
