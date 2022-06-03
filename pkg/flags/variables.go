@@ -20,6 +20,7 @@ var (
 	argNoModule    bool
 	argVerbose     bool
 	argFileLogging bool
+	argUseMarina   bool
 
 	argModules []string
 	argPages   []string

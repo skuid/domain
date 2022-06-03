@@ -33,4 +33,13 @@ var (
 		Default:     true,
 		Global:      true,
 	}
+
+	UseMarina = &Flag[bool]{
+		argument:    &argUseMarina,
+		Name:        "use-marina",
+		Usage:       "Use the new gRPC Marina microservice",
+		EnvVarNames: []string{constants.ENV_USE_MARINA},
+		Default:     true,
+		Global:      true,
+	}
 )

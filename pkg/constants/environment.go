@@ -31,6 +31,7 @@ const (
 
 const (
 	ENV_MARINA_HOST = "MARINA_HOST"
+	ENV_USE_MARINA  = "USE_MARINA"
 )
 
 const (
