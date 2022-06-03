@@ -4,7 +4,7 @@
 // - protoc             v3.19.4
 // source: marina.proto
 
-package pb
+package generated
 
 import (
 	context "context"
@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 // MarinaClient is the client API for Marina service.
 //
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://domain.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MarinaClient interface {
 	Retrieve(ctx context.Context, in *RetrievalRequest, opts ...grpc.CallOption) (Marina_RetrieveClient, error)
 	Deploy(ctx context.Context, in *DeploymentRequest, opts ...grpc.CallOption) (Marina_DeployClient, error)

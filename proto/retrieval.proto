@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package protobuf;
 
-option go_package = "github.com/skuid/domain/pkg/pb";
+option go_package = "github.com/skuid/domain/generated";
 
 // we get a request from tides that's going to
 // fire off a series of requests to ${host}/v2/metadata/retrieve/plan

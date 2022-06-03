@@ -1,0 +1,23 @@
+workspace:
+  base: /go
+  path: src/github.com/skuid/marina
+
+pipeline:
+  fetch:
+    image: alpine/git
+    commands:
+      - git fetch --tags
+  test:
+    image: golang:1.18.3-alpine3.16
+    commands:
+      - go test ./...
+    environment:
+      CGO_ENABLED: "0"
+  build:
+    image: golang:1.18.3-alpine3.16
+    commands:
+      - apk add git
+      - spec_path=$(grep 'spec' go.mod | sed -e 's/ /@/g' | sed -e 's/\t//g')
+      - go build -v -ldflags="-w -X /go/pkg/mod/$spec_path/version.Commit=${DRONE_COMMIT_SHA} -X github.com/skuid/marina/pkg/version.Name=$(git describe --tags $(git rev-list --tags --max-count=1))"
+    environment:
+      CGO_ENABLED: "0"

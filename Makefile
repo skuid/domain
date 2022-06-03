@@ -2,20 +2,20 @@
 
 protoc: clean
 	@echo "Generating Go files"
-	mkdir -p pkg/pb
+	mkdir -p generated
 	protoc \
-		--go_out=pkg/pb \
-		--go-grpc_out=pkg/pb \
+		--go_out=generated \
+		--go-grpc_out=generated \
 		--go-grpc_opt=paths=source_relative \
 		--go_opt=paths=source_relative \
 		--proto_path=proto \
 		proto/*.proto
 	protoc-go-inject-tag \
-		-input="pkg/pb/*.pb.go"
+		-input="generated/*.pb.go"
 		
 commit:
 	git add proto/*
-	git add pkg/pb/*
+	git add generated/*
 	git commit -m"Makefile Auto-Commit"
 
 clean:
