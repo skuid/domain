@@ -10,7 +10,7 @@ pipeline:
   test:
     image: golang:1.18.3-alpine3.16
     commands:
-      - go test -v -short -race ./...
+      - go test -v -short ./...
     environment:
       CGO_ENABLED: "0"
   build:
