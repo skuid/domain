@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gookit/color"
@@ -16,6 +17,7 @@ const (
 )
 
 var (
+	threadsafety    sync.Mutex
 	loggerSingleton Logger
 	LineSeparator   = strings.Repeat("-", SEPARATOR_LENGTH)
 	StarSeparator   = strings.Repeat("*", SEPARATOR_LENGTH)
@@ -72,17 +74,26 @@ func SetFileLogging(logger Logger, loggingDirectory string) (err error) {
 	return
 }
 
+func WithFields(fields logrus.Fields) Logger {
+	loggerSingleton = Get().WithFields(fields)
+	return loggerSingleton
+}
+
 func WithField(field string, value interface{}) Logger {
-	if loggerSingleton == nil {
-		loggerSingleton = Get()
-	}
+	loggerSingleton = Get().WithField(field, value)
+	return loggerSingleton
+}
 
-	loggerSingleton = loggerSingleton.WithField(field, value)
-
+func Reset() Logger {
+	threadsafety.Lock()
+	loggerSingleton = nil
+	threadsafety.Unlock()
 	return Get()
 }
 
 func Get() Logger {
+	threadsafety.Lock()
+	defer threadsafety.Unlock()
 	if loggerSingleton != nil {
 		return loggerSingleton
 	}

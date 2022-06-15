@@ -13,6 +13,8 @@ import (
 	"github.com/gookit/color"
 	"github.com/sirupsen/logrus"
 	jsonpatch "github.com/skuid/json-patch"
+
+	"github.com/skuid/domain/logging"
 )
 
 // FromWindowsPath takes a `path` string and replaces double back-ticks
@@ -24,20 +26,20 @@ func FromWindowsPath(path string) string {
 // GetAbsolutePath gets the absolute path for the directory from the relative path
 func GetAbsolutePath(relative string) (absolute string) {
 	wd, _ := os.Getwd()
-	log := logging.GetLogger().WithFields(logrus.Fields{
+	logging.WithFields(logrus.Fields{
 		"function": "GetAbsolutePath",
 	})
-	log.Debugf("Working Directory: %v", wd)
+	logging.Get().Debugf("Working Directory: %v", wd)
 
 	if strings.Contains(relative, wd) {
-		log.Debugf("Absolute path: %v", relative)
+		logging.Get().Debugf("Absolute path: %v", relative)
 		return relative
 	} else {
-		log.Debug("Relative Path")
+		logging.Get().Debug("Relative Path")
 	}
 
 	absolute, _ = filepath.Abs(filepath.Join(wd, relative))
-	log.Debugf("Target Directory: %v", absolute)
+	logging.Get().Debugf("Target Directory: %v", absolute)
 	return
 }
 
@@ -64,7 +66,7 @@ func DeleteDirectories(targetDirectory string, directories []string) (err error)
 	for _, dirName := range directories {
 		dirPath := filepath.Join(targetDirectory, dirName)
 
-		logging.GetLogger().Debugf("Deleting Directory: %v", color.Red.Sprint(dirPath))
+		logging.Get().Debugf("Deleting Directory: %v", color.Red.Sprint(dirPath))
 
 		if err = os.RemoveAll(dirPath); err != nil {
 			return
@@ -81,7 +83,7 @@ func WriteResultsToDiskInjection(targetDirectory string, results [][]byte, noZip
 	fields := logrus.Fields{
 		"function": "WriteResultsToDiskInjection",
 	}
-	log := logging.GetLogger().WithFields(fields)
+	logging.WithFields(fields)
 
 	// unzip the archive into the output directory
 	targetDirFriendly, err := SanitizePath(targetDirectory)
@@ -89,7 +91,7 @@ func WriteResultsToDiskInjection(targetDirectory string, results [][]byte, noZip
 		return err
 	}
 
-	log.Debugf("Writing results to %v\n", color.Cyan.Sprint(targetDirFriendly))
+	logging.Get().Debugf("Writing results to %v\n", color.Cyan.Sprint(targetDirFriendly))
 
 	// Store a map of paths that we've already encountered. We'll use this
 	// to determine if we need to modify a file or overwrite it.
@@ -104,7 +106,7 @@ func WriteResultsToDiskInjection(targetDirectory string, results [][]byte, noZip
 		defer os.Remove(tmpFileName)
 
 		if noZip {
-			log.Debugf("Moving Temporary File: %v => %v", tmpFileName, targetDirectory)
+			logging.Get().Debugf("Moving Temporary File: %v => %v", tmpFileName, targetDirectory)
 			err = MoveTemporaryFile(tmpFileName, targetDirectory, pathMap, fileCreator, directoryCreator, existingFileReader)
 			if err != nil {
 				return err
@@ -119,7 +121,7 @@ func WriteResultsToDiskInjection(targetDirectory string, results [][]byte, noZip
 		}
 	}
 
-	log.Debugf("Results written to %s\n", color.Cyan.Sprint(targetDirFriendly))
+	logging.Get().Debugf("Results written to %s\n", color.Cyan.Sprint(targetDirFriendly))
 
 	return nil
 }
@@ -134,7 +136,7 @@ func CreateTemporaryFile(data []byte) (name string, err error) {
 		name = tmpfile.Name()
 	}
 
-	logging.GetLogger().WithField("tempFileName", name).Debugf("Created Temp File")
+	logging.Get().WithField("tempFileName", name).Debugf("Created Temp File")
 	return
 }
 
@@ -144,7 +146,7 @@ func MoveTemporaryFile(sourceFileLocation, targetLocation string, pathMap map[st
 		"sourceFileLocation": sourceFileLocation,
 		"targetLocation":     targetLocation,
 	}
-	log := logging.GetLogger().WithFields(fields)
+	logging.WithFields(fields)
 	// If we have a non-empty target directory, ensure it exists
 	if targetLocation != "" {
 		if err = directoryCreator(targetLocation, 0755); err != nil {
@@ -155,7 +157,7 @@ func MoveTemporaryFile(sourceFileLocation, targetLocation string, pathMap map[st
 	// open the file (to copy later)
 	var fi *os.File
 	if fi, err = os.Open(sourceFileLocation); err != nil {
-		log.WithError(err).Debug("os.Open")
+		logging.Get().WithError(err).Debug("os.Open")
 		return
 	}
 	defer fi.Close()
@@ -179,7 +181,7 @@ func MoveTemporaryFile(sourceFileLocation, targetLocation string, pathMap map[st
 	}
 
 	if fileAlreadyWritten {
-		log.Debugf("Augmenting existing file with more data: %s\n", color.Magenta.Sprint(fi.Name()))
+		logging.Get().Debugf("Augmenting existing file with more data: %s\n", color.Magenta.Sprint(fi.Name()))
 		if filepath.Ext(sourceFileLocation) == ".json" {
 			if fileReader, err = CombineJSON(fileReader, existingFileReader, path); err != nil {
 				return
@@ -187,7 +189,7 @@ func MoveTemporaryFile(sourceFileLocation, targetLocation string, pathMap map[st
 		}
 	}
 
-	log.Debugf("Moving file: %v", color.Green.Sprint(fi.Name()))
+	logging.Get().Debugf("Moving file: %v", color.Green.Sprint(fi.Name()))
 
 	if err = fileCreator(fileReader, path); err != nil {
 		return
@@ -203,8 +205,8 @@ func UnzipArchive(sourceFileLocation, targetLocation string, pathMap map[string]
 		"sourceFileLocation": sourceFileLocation,
 		"targetLocation":     targetLocation,
 	}
-	log := logging.GetLogger().WithFields(fields)
-	log.Debugf("Unzipping Archive: %v => %v", sourceFileLocation, targetLocation)
+	logging.WithFields(fields)
+	logging.Get().Debugf("Unzipping Archive: %v => %v", sourceFileLocation, targetLocation)
 	var reader *zip.ReadCloser
 	if reader, err = zip.OpenReader(sourceFileLocation); err != nil {
 		return
@@ -213,7 +215,7 @@ func UnzipArchive(sourceFileLocation, targetLocation string, pathMap map[string]
 	// If we have a non-empty target directory, ensure it exists
 	if targetLocation != "" {
 		if err = directoryCreator(targetLocation, 0755); err != nil {
-			log.WithError(err).Debugf("directoryCreator")
+			logging.Get().WithError(err).Debugf("directoryCreator")
 			return
 		}
 	}
@@ -228,7 +230,7 @@ func UnzipArchive(sourceFileLocation, targetLocation string, pathMap map[string]
 		}
 
 		if err = readFileFromZipAndWriteToFilesystem(file, path, fileAlreadyWritten, fileCreator, directoryCreator, existingFileReader); err != nil {
-			log.WithError(err).Debug("readFileFromZipAndWriteToFilesystem")
+			logging.Get().WithError(err).Debug("readFileFromZipAndWriteToFilesystem")
 			return
 		}
 	}
@@ -264,8 +266,8 @@ func readFileFromZipAndWriteToFilesystem(
 		"func":     "readFileFromZipAndWriteToFilesystem",
 		"fullPath": fullPath,
 	}
-	log := logging.GetLogger().WithFields(fields)
-	log.Debugf("Extracting from Zip: %v", fullPath)
+	logging.WithFields(fields)
+	logging.Get().Debugf("Extracting from Zip: %v", fullPath)
 
 	// If this file name contains a /, make sure that we create the directory it belongs in
 	if pathParts := strings.Split(fullPath, string(filepath.Separator)); len(pathParts) > 0 {
@@ -286,7 +288,7 @@ func readFileFromZipAndWriteToFilesystem(
 	}
 
 	if file.FileInfo().IsDir() {
-		log.Debug("Creating Directory.")
+		logging.Get().Debug("Creating Directory.")
 		return directoryCreator(fullPath, file.Mode())
 	}
 
@@ -297,15 +299,15 @@ func readFileFromZipAndWriteToFilesystem(
 	defer fileReader.Close()
 
 	if filepath.Ext(fullPath) == ".json" {
-		log.Debug("Sanitizing Zip.")
+		logging.Get().Debug("Sanitizing Zip.")
 		if fileReader, err = sanitizeZip(fileReader); err != nil {
-			log.WithError(err).Debug("Error.")
+			logging.Get().WithError(err).Debug("Error.")
 			return
 		}
 	}
 
 	if fileAlreadyWritten {
-		log.Debugf("Augmenting existing file with more data: %s\n", color.Magenta.Sprint(file.Name))
+		logging.Get().Debugf("Augmenting existing file with more data: %s\n", color.Magenta.Sprint(file.Name))
 		if fileReader, err = CombineJSON(fileReader, existingFileReader, fullPath); err != nil {
 			return
 		}
@@ -320,7 +322,7 @@ func readFileFromZipAndWriteToFilesystem(
 
 func CreateDirectoryDeep(path string, fileMode os.FileMode) (err error) {
 	if _, err = os.Stat(path); err != nil {
-		logging.GetLogger().Debugf("Creating intermediate directory: %v", color.Cyan.Sprint(path))
+		logging.Get().Debugf("Creating intermediate directory: %v", color.Cyan.Sprint(path))
 		err = os.MkdirAll(path, fileMode)
 	}
 	return
@@ -351,24 +353,24 @@ func CombineJSON(newFileReader io.ReadCloser, existingFileReader FileReader, pat
 	fields := logrus.Fields{
 		"function": "CombineJSON",
 	}
-	log := logging.GetLogger().WithFields(fields)
-	log.Debugf("Augmenting File with more JSON Data: %v\n", color.Magenta.Sprint(path))
+	logging.WithFields(fields)
+	logging.Get().Debugf("Augmenting File with more JSON Data: %v\n", color.Magenta.Sprint(path))
 	existingBytes, err := existingFileReader(path)
 	if err != nil {
-		log.WithError(err).Debug("existingFileReader")
+		logging.Get().WithError(err).Debug("existingFileReader")
 		return
 	}
 
 	newBytes, err := ioutil.ReadAll(newFileReader)
 	if err != nil {
-		log.WithError(err).Debug("ioutil.ReadAll")
+		logging.Get().WithError(err).Debug("ioutil.ReadAll")
 		return
 	}
 
 	// merge the files together using the json patch library
 	combined, err := jsonpatch.MergePatch(existingBytes, newBytes)
 	if err != nil {
-		log.WithError(err).Debug("jsonpatch.MergePatch")
+		logging.Get().WithError(err).Debug("jsonpatch.MergePatch")
 		return
 	}
 
@@ -376,7 +378,7 @@ func CombineJSON(newFileReader io.ReadCloser, existingFileReader FileReader, pat
 	// this puts "name" first, then everything alphanumerically
 	sorted, err := ReSortJsonIndent(combined, true)
 	if err != nil {
-		log.WithError(err).Debug("ReSortJsonIndent")
+		logging.Get().WithError(err).Debug("ReSortJsonIndent")
 		return
 	}
 
