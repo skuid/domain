@@ -49,7 +49,7 @@ type NlxRetrievalResult struct {
 }
 
 func ExecuteRetrieval(auth *Authorization, plans NlxPlanPayload, noZip bool) (duration time.Duration, results []NlxRetrievalResult, err error) {
-	log := logging.Logger.WithFields(logrus.Fields{
+	log := logging.Get().WithFields(logrus.Fields{
 		"func": "ExecuteRetrieval",
 		"zip":  noZip,
 	})
@@ -78,11 +78,11 @@ func ExecuteRetrieval(auth *Authorization, plans NlxPlanPayload, noZip bool) (du
 				log.Debug(JSON_CONTENT_TYPE)
 			}
 
-			log.Tracef("Plan Headers: %v\n", headers)
+			log.Debugf("Plan Headers: %v\n", headers)
 
 			url := GenerateRoute(auth, plan)
 
-			log.Tracef("Plan Request: %v\n", url)
+			log.Debugf("Plan Request: %v\n", url)
 
 			if result, err := FastRequest(
 				url, fasthttp.MethodPost, NewRetrievalRequestBody(plan.Metadata, noZip), headers,
@@ -94,10 +94,10 @@ func ExecuteRetrieval(auth *Authorization, plans NlxPlanPayload, noZip bool) (du
 					Data:     result,
 				}
 			} else {
-				log.Tracef("Plan: %v", plan)
-				log.Tracef("PlanName: %v", name)
-				log.Tracef("Url: %v", url)
-				log.Tracef("Error on request: %v\n", err.Error())
+				log.Debugf("Plan: %v", plan)
+				log.Debugf("PlanName: %v", name)
+				log.Debugf("Url: %v", url)
+				log.Debugf("Error on request: %v\n", err.Error())
 				return err
 			}
 
@@ -118,13 +118,13 @@ func ExecuteRetrieval(auth *Authorization, plans NlxPlanPayload, noZip bool) (du
 		// if there's an error, we won't consume the results below
 		// and we'll output the error
 		if err != nil {
-			logging.Logger.WithError(err).Error("Error when executing retrieval plan.")
+			logging.Get().WithError(err).Error("Error when executing retrieval plan.")
 		}
 	}()
 
 	// consume the closed channel (probably return an array; todo)
 	for result := range ch {
-		logging.Logger.Tracef("%v\n", result)
+		logging.Get().Debugf("%v\n", result)
 		results = append(results, result)
 	}
 

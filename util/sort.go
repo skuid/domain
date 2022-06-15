@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-
-	"github.com/skuid/domain/logging"
 )
 
 // hopefully this doesn't mess with anything lol
@@ -53,7 +51,7 @@ func ReSortJsonIndent(data []byte, indent bool) (replaced []byte, err error) {
 	var unsorted map[string]interface{}
 	err = json.Unmarshal(data, &unsorted)
 	if err != nil {
-		logging.Logger.Tracef("Error Unmarshalling into map[string]interface{}: %v", string(data))
+		logging.GetLogger().Debugf("Error Unmarshalling into map[string]interface{}: %v", string(data))
 		return
 	}
 

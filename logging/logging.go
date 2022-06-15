@@ -16,9 +16,9 @@ const (
 )
 
 var (
-	Logger        *logrus.Logger
-	LineSeparator = strings.Repeat("-", SEPARATOR_LENGTH)
-	StarSeparator = strings.Repeat("*", SEPARATOR_LENGTH)
+	loggerSingleton Logger
+	LineSeparator   = strings.Repeat("-", SEPARATOR_LENGTH)
+	StarSeparator   = strings.Repeat("*", SEPARATOR_LENGTH)
 
 	fileStringFormat = func() (ret string) {
 		ret = time.RFC3339
@@ -28,7 +28,11 @@ var (
 	}()
 )
 
-func SetFileLogging(loggingDirectory string) (err error) {
+type Logger interface {
+	logrus.FieldLogger
+}
+
+func SetFileLogging(logger Logger, loggingDirectory string) (err error) {
 	var wd string
 	if wd, err = os.Getwd(); err != nil {
 		return
@@ -59,24 +63,43 @@ func SetFileLogging(loggingDirectory string) (err error) {
 	if file, err := os.OpenFile(path.Join(dir, logFileName), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); err != nil {
 		return err
 	} else {
-		Logger.SetOutput(file)
-		Logger.SetFormatter(&logrus.TextFormatter{})
+		l, _ := logger.(*logrus.Logger)
+		l.SetOutput(file)
+		l.SetFormatter(&logrus.TextFormatter{})
 		color.Enable = false
 	}
 
 	return
 }
 
-func init() {
-	Logger = logrus.New()
+func WithField(field string, value interface{}) Logger {
+	if loggerSingleton == nil {
+		loggerSingleton = Get()
+	}
+
+	loggerSingleton = loggerSingleton.WithField(field, value)
+
+	return Get()
+}
+
+func Get() Logger {
+	if loggerSingleton != nil {
+		return loggerSingleton
+	}
+
+	loggerSingleton = logrus.StandardLogger()
+
+	l, _ := loggerSingleton.(*logrus.Logger)
 
 	// Log as JSON instead of the default ASCII formatter.
-	Logger.SetFormatter(&logrus.TextFormatter{})
+	l.SetFormatter(&logrus.TextFormatter{})
 
 	// Output to stdout instead of the default stderr
 	// Can be any io.Writer, see below for File example
-	Logger.SetOutput(os.Stdout)
+	l.SetOutput(os.Stdout)
 
 	// Only log the warning severity or above.
-	Logger.SetLevel(logrus.TraceLevel)
+	l.SetLevel(logrus.DebugLevel)
+
+	return loggerSingleton
 }
