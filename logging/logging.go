@@ -34,7 +34,14 @@ type Logger interface {
 	logrus.FieldLogger
 }
 
-func SetFileLogging(logger Logger, loggingDirectory string) (err error) {
+func SetVerbose() Logger {
+	loggerSingleton = Get()
+	l, _ := loggerSingleton.(*logrus.Logger)
+	l.SetLevel(logrus.DebugLevel)
+	return loggerSingleton
+}
+
+func SetFileLogging(loggingDirectory string) (err error) {
 	var wd string
 	if wd, err = os.Getwd(); err != nil {
 		return
@@ -65,7 +72,7 @@ func SetFileLogging(logger Logger, loggingDirectory string) (err error) {
 	if file, err := os.OpenFile(path.Join(dir, logFileName), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); err != nil {
 		return err
 	} else {
-		l, _ := logger.(*logrus.Logger)
+		l, _ := Get().(*logrus.Logger)
 		l.SetOutput(file)
 		l.SetFormatter(&logrus.TextFormatter{})
 		color.Enable = false

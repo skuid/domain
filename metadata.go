@@ -11,19 +11,19 @@ import (
 )
 
 type NlxMetadata struct {
-	Apps               []string `json:"apps"`
-	AuthProviders      []string `json:"authproviders"`
-	ComponentPacks     []string `json:"componentpacks"`
-	DataServices       []string `json:"dataservices"`
-	DataSources        []string `json:"datasources"`
-	DesignSystems      []string `json:"designsystems"`
-	Variables          []string `json:"variables"`
-	Files              []string `json:"files"`
-	Pages              []string `json:"pages"`
-	PermissionSets     []string `json:"permissionsets"`
-	SitePermissionSets []string `json:"sitepermissionsets"`
-	Site               []string `json:"site"`
-	Themes             []string `json:"themes"`
+	Apps           []string `json:"apps,omitempty"`
+	AuthProviders  []string `json:"authproviders,omitempty"`
+	ComponentPacks []string `json:"componentpacks,omitempty"`
+	DataServices   []string `json:"dataservices,omitempty"`
+	DataSources    []string `json:"datasources,omitempty"`
+	DesignSystems  []string `json:"designsystems,omitempty"`
+	Variables      []string `json:"variables,omitempty"`
+	Files          []string `json:"files,omitempty"`
+	Pages          []string `json:"pages,omitempty"`
+	PermissionSets []string `json:"permissionsets,omitempty"`
+	Profiles       []string `json:"profiles,omitempty"`
+	Site           []string `json:"site,omitempty"`
+	Themes         []string `json:"themes,omitempty"`
 }
 
 func GetFieldValueByNameError(target string) error {

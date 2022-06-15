@@ -18,10 +18,12 @@ func RemovePasswordBytes(bytes []byte) []byte {
 // able to safely remove the password from the
 // strings we output to logs, so we should do this.
 func RemovePassword(str string) string {
-	str = strings.ReplaceAll(
-		str,
-		flags.Password.GetValue(),
-		constants.PasswordPlaceholder,
-	)
+	if flags.Password.GetValue() != "" {
+		str = strings.ReplaceAll(
+			str,
+			flags.Password.GetValue(),
+			constants.PasswordPlaceholder,
+		)
+	}
 	return str
 }

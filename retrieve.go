@@ -106,8 +106,9 @@ func ExecuteRetrieval(auth *Authorization, plans NlxPlanPayload, noZip bool) (du
 	}
 
 	// fire off the threads
-	eg.Go(executePlan("Warden", plans.CloudDataService))
-	eg.Go(executePlan("Pliny", plans.MetadataService))
+	for k, v := range plans {
+		eg.Go(executePlan(k, v))
+	}
 
 	// fire off another thread that polls for the conclusion of
 	// the waitgroup, then closes the channel. The following lines (for range := chan)

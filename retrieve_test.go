@@ -35,11 +35,36 @@ func TestRetrievePlan(t *testing.T) {
 			t.Log(err)
 
 			for _, plan := range []domain.NlxPlan{
-				result.CloudDataService, result.MetadataService,
+				result[domain.WardenKey], result[domain.PlinyKey],
 			} {
 				t.Logf("PLAN (%v):", plan.Type)
 				b, _ := json.MarshalIndent(plan, "", " ")
 				t.Log(string(b))
+			}
+		})
+	}
+}
+
+func TestSplitPlan(t *testing.T) {
+	for _, tc := range []struct {
+		description string
+		plans       domain.NlxPlanPayload
+	}{
+		{
+			description: "full",
+			plans: domain.NlxPlanPayload{
+				domain.PlinyKey: domain.NlxPlan{
+					Metadata: domain.NlxMetadata{
+						Apps: []string{"a", "b"},
+					},
+				},
+				domain.WardenKey: domain.NlxPlan{},
+			},
+		},
+	} {
+		t.Run(tc.description, func(t *testing.T) {
+			for k := range domain.SplitPlans(tc.plans) {
+				t.Log(k)
 			}
 		})
 	}

@@ -11,7 +11,6 @@ import (
 	"github.com/skuid/domain/constants"
 	"github.com/skuid/domain/errors"
 	"github.com/skuid/domain/logging"
-	"github.com/skuid/domain/util"
 )
 
 var (
@@ -108,11 +107,6 @@ func FastRequestHelper(
 	// ...For login: this is the url encoded bytes that we prepared beforehand
 	// ...along with the grant_type: password
 	if len(body) > 0 {
-		if len(body) < 1e4 {
-			logging.Get().Debugf("With body: %v\n", string(util.RemovePasswordBytes(body)))
-		} else {
-			logging.Get().Debugf("(With large body, too large to print)\n")
-		}
 		req.SetBody(body)
 	}
 
