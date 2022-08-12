@@ -14,8 +14,8 @@ option go_package = "github.com/skuid/domain/generated";
 //${host}/api/v1/site/verificationkey
 message RetrievalRequest {
   string Host = 1;
-  string Username = 2; //@gotags json:"username"
-  string Password = 3;
+  string Username = 2;
+  string Password = 3; // @gotags: json:"-"
   RetrieveFilter Filter = 4;
 }
 
@@ -24,4 +24,8 @@ message RetrieveFilter {
   repeated string PageNames = 2; //@gotags: json:"pageNames"
 }
 
-message RetrievalResponse {}
+message RetrievalResponse {
+  bytes Data = 1;      // @gotags: json:"data"
+  string PlanName = 2; // @gotags: json:"planName"
+  string Url = 3;      // @gotags: json:"url"
+}
