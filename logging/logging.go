@@ -44,6 +44,7 @@ func SetVerbose() logrus.Ext1FieldLogger {
 	loggerSingleton = Get()
 	l, _ := loggerSingleton.(*logrus.Logger)
 	l.SetLevel(logrus.DebugLevel)
+	l.Debug("[Log Level: Verbose]")
 	return loggerSingleton
 }
 
