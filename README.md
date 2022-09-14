@@ -1,16 +1,15 @@
-# Shared Domain
+# Skuid Shared Domain Library
 
-## Named for the boat that chased Moby-Dick
+## Purpose
 
-This repository is used to store protobuf definitions and common business logic between [marina](https://github.com/skuid/marina) and [tides](https://github.com/skuid/domain)
+The purpose of this library is to share business logic (authentication), repeatable logic (command line arguments, logging), cross-platform logic (models, constants, protobuf contract definitions) and utilities across projects (e.g. `marina`, `tides`).
 
-We're going to use [buf](https://buf.build)([pricing](https://buf.build/pricing/)) for the protocol buffer builds if we want to later.
 
-Until then, makefiles.
+## Protobuf
 
----
+### `proto` directory:
 
-## proto deps
+In this package you'll find 
 
 ```
 brew install protobuf
